@@ -25,7 +25,8 @@ export default function CompleanniPage() {
 
   useEffect(() => {
     getAllCompleanni().then(({ data }) => {
-      setProfili(sortByBirthday(data || []))
+      const conData = (data || []).filter(p => !!p.data_nascita)
+      setProfili(sortByBirthday(conData))
       setLoading(false)
     })
   }, [])
@@ -36,49 +37,59 @@ export default function CompleanniPage() {
 
   const isToday = (dataNascita) => {
     if (!dataNascita) return false
-    const [, mm, dd] = dataNascita.split('-')
-    return mm === todayMM && dd === todayDD
+    const parts = dataNascita.split('-')
+    return parts[1] === todayMM && parts[2] === todayDD
   }
 
   const isThisMonth = (dataNascita) => {
     if (!dataNascita) return false
-    const [, mm] = dataNascita.split('-')
-    return mm === todayMM
+    return dataNascita.split('-')[1] === todayMM
   }
 
-  const eta = (dataNascita) => differenceInYears(oggi, new Date(dataNascita))
+  const eta = (dataNascita) => {
+    try { return differenceInYears(oggi, new Date(dataNascita)) }
+    catch { return '?' }
+  }
 
   return (
     <div className="max-w-lg mx-auto px-4 py-5">
-      <h1 className="text-xl font-extrabold text-gray-900 mb-5 flex items-center gap-2">
+      <h1 className="text-xl font-extrabold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
         <Cake size={22} className="text-pink-500" />
         Compleanni del team
       </h1>
 
-      {loading ? <LoadingSpinner fullScreen={false} /> : (
+      {loading ? <LoadingSpinner fullScreen={false} /> : profili.length === 0 ? (
+        <div className="text-center py-16 text-gray-400">
+          <Cake size={36} className="mx-auto mb-3 opacity-30" />
+          <p>Nessun compleanno disponibile</p>
+        </div>
+      ) : (
         <div className="space-y-2">
           {profili.map(p => {
-            const oggi_ = isToday(p.data_nascita)
-            const mese = isThisMonth(p.data_nascita)
-            const dataNascita = new Date(p.data_nascita + 'T12:00:00')
-            const mmdd = format(dataNascita, 'd MMMM', { locale: it })
+            const oggiFlag = isToday(p.data_nascita)
+            const meseFlag = isThisMonth(p.data_nascita)
+            let mmdd = ''
+            try {
+              mmdd = format(new Date(p.data_nascita + 'T12:00:00'), 'd MMMM', { locale: it })
+            } catch { mmdd = p.data_nascita }
+
             return (
-              <div key={p.id} className={`card p-4 flex items-center gap-3 ${oggi_ ? 'border-pink-300 bg-pink-50/50' : ''}`}>
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${oggi_ ? 'bg-pink-500' : 'bg-gradient-to-br from-mare-400 to-corallo-400'}`}>
-                  {oggi_
+              <div key={p.id} className={`card p-4 flex items-center gap-3 ${oggiFlag ? 'border-pink-300 bg-pink-50/50' : ''}`}>
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${oggiFlag ? 'bg-pink-500' : 'bg-gradient-to-br from-mare-400 to-corallo-400'}`}>
+                  {oggiFlag
                     ? <span className="text-2xl">🎂</span>
                     : <span className="text-white font-bold">{p.nome?.[0]}{p.cognome?.[0]}</span>
                   }
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold text-gray-800">{p.nome} {p.cognome}</p>
-                    {oggi_ && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-semibold text-gray-800 dark:text-white">{p.nome} {p.cognome}</p>
+                    {oggiFlag && (
                       <span className="bg-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-bounce-gentle">
                         OGGI! 🎉
                       </span>
                     )}
-                    {mese && !oggi_ && (
+                    {meseFlag && !oggiFlag && (
                       <span className="bg-pink-100 text-pink-600 text-[10px] font-semibold px-2 py-0.5 rounded-full">
                         Questo mese
                       </span>
