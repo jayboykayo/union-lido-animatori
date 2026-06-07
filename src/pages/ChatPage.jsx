@@ -155,8 +155,7 @@ function ChatWindow({ chat, userId, profile, onBack }) {
         : { destinatario_id: chat.id, gruppo: null }
       ),
     }
-    const { data } = await inviaMessaggio(msg)
-    if (data) setMessaggi(prev => [...prev, { ...data, profiles: { nome: profile?.nome, cognome: profile?.cognome } }])
+    await inviaMessaggio(msg)
     setTesto('')
     setSending(false)
   }
