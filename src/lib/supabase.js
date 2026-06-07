@@ -252,3 +252,25 @@ export const getAllCompleanni = async () => {
     .order('data_nascita')
   return { data, error }
 }
+// ─── Avatar ───────────────────────────────────────────────────
+export const uploadAvatar = async (userId, file) => {
+  const ext = file.name.split('.').pop()
+  const path = `${userId}.${ext}`
+  const { error } = await supabase.storage
+    .from('avatars')
+    .upload(path, file, { upsert: true })
+  if (error) return { error }
+  const { data } = supabase.storage.from('avatars').getPublicUrl(path)
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ avatar_url: data.publicUrl })
+    .eq('id', userId)
+  return { url: data.publicUrl, error: updateError }
+}
+
+export const getAvatarUrl = (userId, ext = 'png') => {
+  const { data } = supabase.storage
+    .from('avatars')
+    .getPublicUrl(`${userId}.${ext}`)
+  return data.publicUrl
+}

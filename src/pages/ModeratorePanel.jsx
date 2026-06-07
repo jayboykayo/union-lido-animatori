@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getAllProfiles, createUser, deleteUser, resetUserPassword, updateProfile } from '../lib/supabase'
-import { Plus, Edit2, Trash2, KeyRound, X, Search, ChevronDown } from 'lucide-react'
+import { getAllProfiles, createUser, deleteUser, resetUserPassword, updateProfile, uploadAvatar } from '../lib/supabase'
+import { Plus, Edit2, Trash2, KeyRound, X, Search, ChevronDown, Camera } from 'lucide-react'
 import TipoBadge from '../components/layout/TipoBadge'
 import LoadingSpinner from '../components/layout/LoadingSpinner'
 
@@ -11,6 +11,24 @@ const emptyForm = {
   nome: '', cognome: '', data_nascita: '', username: '',
   password: '', ruolo: 'animatore', tipo_animazione: 'Mini Club',
   numero_stanza: '', gruppo_cucina: '', data_inizio: '', data_fine: '', telefono: ''
+}
+
+function Avatar({ profilo, size = 'md' }) {
+  const sizeClass = size === 'md' ? 'w-11 h-11' : 'w-12 h-12'
+  if (profilo.avatar_url) {
+    return (
+      <img
+        src={profilo.avatar_url}
+        alt={profilo.nome}
+        className={`${sizeClass} rounded-2xl object-cover flex-shrink-0`}
+      />
+    )
+  }
+  return (
+    <div className={`${sizeClass} rounded-2xl bg-gradient-to-br from-mare-400 to-corallo-400 flex items-center justify-center flex-shrink-0`}>
+      <span className="text-white font-bold text-sm">{profilo.nome?.[0]}{profilo.cognome?.[0]}</span>
+    </div>
+  )
 }
 
 export default function ModeratorePanel() {
@@ -24,6 +42,9 @@ export default function ModeratorePanel() {
   const [error, setError] = useState('')
   const [resetModal, setResetModal] = useState(null)
   const [newPw, setNewPw] = useState('')
+  const [avatarFile, setAvatarFile] = useState(null)
+  const [avatarPreview, setAvatarPreview] = useState(null)
+  const [uploadingAvatar, setUploadingAvatar] = useState(null)
 
   useEffect(() => { fetchProfili() }, [])
 
@@ -37,6 +58,8 @@ export default function ModeratorePanel() {
   const openCreate = () => {
     setEditing(null)
     setForm(emptyForm)
+    setAvatarFile(null)
+    setAvatarPreview(null)
     setError('')
     setShowForm(true)
   }
@@ -52,8 +75,17 @@ export default function ModeratorePanel() {
       data_inizio: p.data_inizio || '', data_fine: p.data_fine || '',
       telefono: p.telefono || ''
     })
+    setAvatarFile(null)
+    setAvatarPreview(p.avatar_url || null)
     setError('')
     setShowForm(true)
+  }
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setAvatarFile(file)
+    setAvatarPreview(URL.createObjectURL(file))
   }
 
   const handleSave = async () => {
@@ -61,6 +93,8 @@ export default function ModeratorePanel() {
     if (!editing && (!form.username.trim() || !form.password)) { setError('Username e password obbligatori per i nuovi utenti'); return }
     setSaving(true)
     setError('')
+
+    let savedId = editing?.id
 
     if (editing) {
       const { error } = await updateProfile(editing.id, {
@@ -73,7 +107,7 @@ export default function ModeratorePanel() {
       })
       if (error) { setError('Errore: ' + error.message); setSaving(false); return }
     } else {
-      const { error } = await createUser({
+      const { data, error } = await createUser({
         username: form.username.trim().toLowerCase(),
         password: form.password,
         nome: form.nome, cognome: form.cognome,
@@ -86,10 +120,24 @@ export default function ModeratorePanel() {
         telefono: form.telefono || null,
       })
       if (error) { setError('Errore: ' + (error.message || 'impossibile creare utente')); setSaving(false); return }
+      savedId = data?.userId
+    }
+
+    if (avatarFile && savedId) {
+      await uploadAvatar(savedId, avatarFile)
     }
 
     setSaving(false)
     setShowForm(false)
+    fetchProfili()
+  }
+
+  const handleAvatarDirect = async (profilo, e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setUploadingAvatar(profilo.id)
+    await uploadAvatar(profilo.id, file)
+    setUploadingAvatar(null)
     fetchProfili()
   }
 
@@ -117,7 +165,7 @@ export default function ModeratorePanel() {
     <div className="max-w-lg mx-auto px-4 py-5">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-xl font-extrabold text-gray-900">Moderatore</h1>
+          <h1 className="text-xl font-extrabold text-gray-900 dark:text-white">Moderatore</h1>
           <p className="text-sm text-gray-400 mt-0.5">{profili.length} utenti totali</p>
         </div>
         <button onClick={openCreate} className="btn-primary py-2.5 px-4 text-sm">
@@ -125,23 +173,27 @@ export default function ModeratorePanel() {
         </button>
       </div>
 
-      {/* Search */}
       <div className="relative mb-4">
         <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
         <input className="input pl-10" placeholder="Cerca utente..." value={query} onChange={e => setQuery(e.target.value)} />
       </div>
 
-      {/* Lista */}
       {loading ? <LoadingSpinner fullScreen={false} /> : (
         <div className="space-y-2">
           {filtered.map(p => (
             <div key={p.id} className="card p-4">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-mare-400 to-corallo-400 flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-sm">{p.nome?.[0]}{p.cognome?.[0]}</span>
+                <div className="relative flex-shrink-0">
+                  <Avatar profilo={p} size="md" />
+                  <label className="absolute -bottom-1 -right-1 w-6 h-6 bg-mare-500 rounded-full flex items-center justify-center cursor-pointer shadow">
+                    {uploadingAvatar === p.id
+                      ? <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
+                      : <Camera size={11} className="text-white" />}
+                    <input type="file" accept="image/*" className="hidden" onChange={e => handleAvatarDirect(p, e)} />
+                  </label>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-800">{p.nome} {p.cognome}</p>
+                  <p className="font-semibold text-gray-800 dark:text-white">{p.nome} {p.cognome}</p>
                   <p className="text-xs text-gray-400 mt-0.5">@{p.username}</p>
                   <div className="flex gap-1.5 mt-1.5 flex-wrap">
                     <TipoBadge tipo={p.ruolo} size="xs" />
@@ -173,51 +225,62 @@ export default function ModeratorePanel() {
         </div>
       )}
 
-      {/* Form crea/modifica */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end overflow-hidden">
-          <div className="bg-white w-full rounded-t-3xl p-6 max-h-[92vh] overflow-y-auto animate-slide-up">
+          <div className="bg-white dark:bg-gray-800 w-full rounded-t-3xl p-6 max-h-[92vh] overflow-y-auto animate-slide-up">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold">{editing ? 'Modifica utente' : 'Nuovo utente'}</h2>
+              <h2 className="text-lg font-bold dark:text-white">{editing ? 'Modifica utente' : 'Nuovo utente'}</h2>
               <button onClick={() => setShowForm(false)}><X size={22} className="text-gray-400" /></button>
             </div>
 
+            {/* Avatar preview nel form */}
+            <div className="flex justify-center mb-5">
+              <label className="relative cursor-pointer">
+                {avatarPreview
+                  ? <img src={avatarPreview} className="w-24 h-24 rounded-3xl object-cover shadow-lg" />
+                  : <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-mare-400 to-corallo-400 flex items-center justify-center shadow-lg">
+                      <Camera size={28} className="text-white" />
+                    </div>
+                }
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-mare-500 rounded-full flex items-center justify-center shadow">
+                  <Camera size={14} className="text-white" />
+                </div>
+                <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+              </label>
+            </div>
+
             <div className="space-y-4">
-              {/* Nome e cognome */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Nome *</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Nome *</label>
                   <input className="input" value={form.nome} onChange={e => f('nome', e.target.value)} placeholder="Mario" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Cognome *</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Cognome *</label>
                   <input className="input" value={form.cognome} onChange={e => f('cognome', e.target.value)} placeholder="Rossi" />
                 </div>
               </div>
 
-              {/* Username e password (solo creazione) */}
               {!editing && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Username *</label>
+                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Username *</label>
                     <input className="input" value={form.username} onChange={e => f('username', e.target.value)} placeholder="mario.rossi" autoCapitalize="none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Password temp. *</label>
+                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Password temp. *</label>
                     <input type="text" className="input" value={form.password} onChange={e => f('password', e.target.value)} placeholder="Temporanea" />
                   </div>
                 </div>
               )}
 
-              {/* Data nascita */}
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1.5">Data di nascita</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Data di nascita</label>
                 <input type="date" className="input" value={form.data_nascita} onChange={e => f('data_nascita', e.target.value)} />
               </div>
 
-              {/* Ruolo */}
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1.5">Ruolo *</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Ruolo *</label>
                 <div className="relative">
                   <select className="input appearance-none pr-10" value={form.ruolo} onChange={e => f('ruolo', e.target.value)}>
                     {RUOLI.map(r => <option key={r} value={r}>{r}</option>)}
@@ -226,10 +289,9 @@ export default function ModeratorePanel() {
                 </div>
               </div>
 
-              {/* Tipo animazione */}
               {form.ruolo === 'animatore' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Tipo animazione</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Tipo animazione</label>
                   <div className="relative">
                     <select className="input appearance-none pr-10" value={form.tipo_animazione} onChange={e => f('tipo_animazione', e.target.value)}>
                       {TIPI.map(t => <option key={t} value={t}>{t}</option>)}
@@ -239,33 +301,30 @@ export default function ModeratorePanel() {
                 </div>
               )}
 
-              {/* Stanza e gruppo cucina */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">N. Stanza</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">N. Stanza</label>
                   <input className="input" value={form.numero_stanza} onChange={e => f('numero_stanza', e.target.value)} placeholder="42" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Gruppo cucina</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Gruppo cucina</label>
                   <input type="number" className="input" value={form.gruppo_cucina} onChange={e => f('gruppo_cucina', e.target.value)} placeholder="1" min="1" />
                 </div>
               </div>
 
-              {/* Periodo permanenza */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Inizio</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Inizio</label>
                   <input type="date" className="input" value={form.data_inizio} onChange={e => f('data_inizio', e.target.value)} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Fine</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Fine</label>
                   <input type="date" className="input" value={form.data_fine} onChange={e => f('data_fine', e.target.value)} />
                 </div>
               </div>
 
-              {/* Telefono */}
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1.5">Telefono</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Telefono</label>
                 <input type="tel" className="input" value={form.telefono} onChange={e => f('telefono', e.target.value)} placeholder="+39 333 1234567" />
               </div>
 
@@ -283,25 +342,17 @@ export default function ModeratorePanel() {
         </div>
       )}
 
-      {/* Modal reset password */}
       {resetModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-6">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-bold text-gray-900">Reset password</h2>
+              <h2 className="font-bold text-gray-900 dark:text-white">Reset password</h2>
               <button onClick={() => setResetModal(null)}><X size={20} className="text-gray-400" /></button>
             </div>
             <p className="text-sm text-gray-500 mb-4">
               Imposta una nuova password temporanea per <strong>{resetModal.nome} {resetModal.cognome}</strong>.
-              L'utente dovrà cambiarla al prossimo accesso.
             </p>
-            <input
-              type="text"
-              className="input mb-4"
-              value={newPw}
-              onChange={e => setNewPw(e.target.value)}
-              placeholder="Nuova password temporanea"
-            />
+            <input type="text" className="input mb-4" value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="Nuova password temporanea" />
             <button onClick={handleReset} disabled={newPw.length < 8} className="btn-primary w-full">
               <KeyRound size={16} /> Imposta password
             </button>

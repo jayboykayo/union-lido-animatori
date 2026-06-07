@@ -31,37 +31,23 @@ export default function RubricaPage() {
     return acc
   }, {})
 
-  // Capi senza tipo
   const capi = filtrati.filter(p => p.ruolo === 'capo')
 
   return (
     <div className="max-w-lg mx-auto px-4 py-5">
-      <h1 className="text-xl font-extrabold text-gray-900 mb-4">Rubrica team</h1>
+      <h1 className="text-xl font-extrabold text-gray-900 dark:text-white mb-4">Rubrica team</h1>
 
-      {/* Search */}
       <div className="relative mb-4">
         <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          className="input pl-10"
-          placeholder="Cerca per nome..."
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-        />
+        <input type="text" className="input pl-10" placeholder="Cerca per nome..." value={query} onChange={e => setQuery(e.target.value)} />
       </div>
 
-      {/* Filtri tipo */}
       <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-5">
         {TIPI.map(tipo => (
-          <button
-            key={tipo}
-            onClick={() => setFiltro(tipo)}
+          <button key={tipo} onClick={() => setFiltro(tipo)}
             className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-sm font-semibold transition ${
-              filtro === tipo
-                ? 'bg-mare-500 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
+              filtro === tipo ? 'bg-mare-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+            }`}>
             {tipo}
           </button>
         ))}
@@ -69,7 +55,6 @@ export default function RubricaPage() {
 
       {loading ? <LoadingSpinner fullScreen={false} /> : (
         <div className="space-y-6">
-          {/* Capi */}
           {capi.length > 0 && (
             <section>
               <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Capi</h2>
@@ -79,7 +64,6 @@ export default function RubricaPage() {
             </section>
           )}
 
-          {/* Animatori per tipo */}
           {filtro === 'Tutti'
             ? Object.entries(grouped).map(([tipo, lista]) => (
               <section key={tipo}>
@@ -89,11 +73,7 @@ export default function RubricaPage() {
                 </div>
               </section>
             ))
-            : (
-              <div className="space-y-2">
-                {filtrati.filter(p => p.ruolo === 'animatore').map(p => <ProfileCard key={p.id} profilo={p} />)}
-              </div>
-            )
+            : <div className="space-y-2">{filtrati.filter(p => p.ruolo === 'animatore').map(p => <ProfileCard key={p.id} profilo={p} />)}</div>
           }
 
           {filtrati.length === 0 && (
@@ -111,11 +91,16 @@ export default function RubricaPage() {
 function ProfileCard({ profilo: p }) {
   return (
     <div className="card p-4 flex items-center gap-3">
-      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-mare-400 to-corallo-400 flex items-center justify-center flex-shrink-0 shadow-sm">
-        <span className="text-white font-bold">{p.nome?.[0]}{p.cognome?.[0]}</span>
+      <div className="w-12 h-12 rounded-2xl flex-shrink-0 shadow-sm overflow-hidden">
+        {p.avatar_url
+          ? <img src={p.avatar_url} alt={p.nome} className="w-full h-full object-cover" />
+          : <div className="w-full h-full bg-gradient-to-br from-mare-400 to-corallo-400 flex items-center justify-center">
+              <span className="text-white font-bold">{p.nome?.[0]}{p.cognome?.[0]}</span>
+            </div>
+        }
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-gray-800">{p.nome} {p.cognome}</p>
+        <p className="font-semibold text-gray-800 dark:text-white">{p.nome} {p.cognome}</p>
         <div className="mt-1 flex items-center gap-1.5 flex-wrap">
           {p.tipo_animazione && <TipoBadge tipo={p.tipo_animazione} size="xs" />}
           {p.ruolo === 'capo' && <TipoBadge tipo="capo" size="xs" />}
@@ -123,18 +108,11 @@ function ProfileCard({ profilo: p }) {
       </div>
       {p.telefono && (
         <div className="flex gap-1.5 flex-shrink-0">
-          <a
-            href={`tel:${p.telefono}`}
-            className="w-9 h-9 bg-green-100 text-green-600 rounded-xl flex items-center justify-center active:scale-90 transition"
-          >
+          <a href={`tel:${p.telefono}`} className="w-9 h-9 bg-green-100 text-green-600 rounded-xl flex items-center justify-center active:scale-90 transition">
             <Phone size={17} />
           </a>
-          <a
-            href={`https://wa.me/${p.telefono?.replace(/\D/g, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-9 h-9 bg-green-500 text-white rounded-xl flex items-center justify-center active:scale-90 transition"
-          >
+          <a href={`https://wa.me/${p.telefono?.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer"
+            className="w-9 h-9 bg-green-500 text-white rounded-xl flex items-center justify-center active:scale-90 transition">
             <MessageCircle size={17} />
           </a>
         </div>
