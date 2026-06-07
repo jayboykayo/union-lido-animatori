@@ -4,7 +4,7 @@ import { Search, Phone, MessageCircle } from 'lucide-react'
 import TipoBadge from '../components/layout/TipoBadge'
 import LoadingSpinner from '../components/layout/LoadingSpinner'
 
-const TIPI = ['Tutti', 'Mascotte', 'Mini Club', 'Maxi Club', 'Sport Coach', 'Fitness Coach', 'Service']
+const TIPI = ['Tutti', 'Mascotte', 'Mini Club', 'Sport Coach', 'Fitness Coach', 'Service']
 
 export default function RubricaPage() {
   const [profili, setProfili] = useState([])
@@ -21,12 +21,12 @@ export default function RubricaPage() {
 
   const filtrati = profili.filter(p => {
     const matchQuery = `${p.nome} ${p.cognome}`.toLowerCase().includes(query.toLowerCase())
-    const matchFiltro = filtro === 'Tutti' || p.tipo_animazione === filtro
+    const matchFiltro = filtro === 'Tutti' || (p.tipi_animazione || []).includes(filtro)
     return matchQuery && matchFiltro
   })
 
   const grouped = TIPI.slice(1).reduce((acc, tipo) => {
-    const list = filtrati.filter(p => p.tipo_animazione === tipo)
+    const list = filtrati.filter(p => (p.tipi_animazione || []).includes(tipo))
     if (list.length) acc[tipo] = list
     return acc
   }, {})
@@ -102,7 +102,7 @@ function ProfileCard({ profilo: p }) {
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-gray-800 dark:text-white">{p.nome} {p.cognome}</p>
         <div className="mt-1 flex items-center gap-1.5 flex-wrap">
-          {p.tipo_animazione && <TipoBadge tipo={p.tipo_animazione} size="xs" />}
+          {(p.tipi_animazione || []).map(t => <TipoBadge key={t} tipo={t} size="xs" />)}
           {p.ruolo === 'capo' && <TipoBadge tipo="capo" size="xs" />}
         </div>
       </div>

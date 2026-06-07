@@ -5,11 +5,11 @@ import TipoBadge from '../components/layout/TipoBadge'
 import LoadingSpinner from '../components/layout/LoadingSpinner'
 
 const RUOLI = ['animatore', 'capo', 'moderatore']
-const TIPI = ['Mascotte', 'Mini Club', 'Maxi Club', 'Sport Coach', 'Fitness Coach', 'Service']
+const TIPI = ['Mascotte', 'Mini Club', 'Sport Coach', 'Fitness Coach', 'Service']
 
 const emptyForm = {
   nome: '', cognome: '', data_nascita: '', username: '',
-  password: '', ruolo: 'animatore', tipo_animazione: 'Mini Club',
+  password: '', ruolo: 'animatore', tipi_animazione: [],
   numero_stanza: '', gruppo_cucina: '', data_inizio: '', data_fine: '', telefono: ''
 }
 
@@ -70,7 +70,7 @@ export default function ModeratorePanel() {
       nome: p.nome || '', cognome: p.cognome || '',
       data_nascita: p.data_nascita || '', username: p.username || '',
       password: '', ruolo: p.ruolo || 'animatore',
-      tipo_animazione: p.tipo_animazione || 'Mini Club',
+      tipo_animazione: p.tipi_animazione || [],
       numero_stanza: p.numero_stanza || '', gruppo_cucina: p.gruppo_cucina || '',
       data_inizio: p.data_inizio || '', data_fine: p.data_fine || '',
       telefono: p.telefono || ''
@@ -99,7 +99,7 @@ export default function ModeratorePanel() {
     if (editing) {
       const { error } = await updateProfile(editing.id, {
         nome: form.nome, cognome: form.cognome, data_nascita: form.data_nascita || null,
-        ruolo: form.ruolo, tipo_animazione: form.ruolo === 'animatore' ? form.tipo_animazione : null,
+        ruolo: form.ruolo, tipo_animazione: form.ruolo === 'animatore' ? form.tipi_animazione : [],
         numero_stanza: form.numero_stanza || null,
         gruppo_cucina: form.gruppo_cucina ? parseInt(form.gruppo_cucina) : null,
         data_inizio: form.data_inizio || null, data_fine: form.data_fine || null,
@@ -113,7 +113,7 @@ export default function ModeratorePanel() {
         nome: form.nome, cognome: form.cognome,
         data_nascita: form.data_nascita || null,
         ruolo: form.ruolo,
-        tipo_animazione: form.ruolo === 'animatore' ? form.tipo_animazione : null,
+        tipi_animazione: form.ruolo === 'animatore' ? form.tipi_animazione : [],
         numero_stanza: form.numero_stanza || null,
         gruppo_cucina: form.gruppo_cucina ? parseInt(form.gruppo_cucina) : null,
         data_inizio: form.data_inizio || null, data_fine: form.data_fine || null,
@@ -290,16 +290,29 @@ export default function ModeratorePanel() {
               </div>
 
               {form.ruolo === 'animatore' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Tipo animazione</label>
-                  <div className="relative">
-                    <select className="input appearance-none pr-10" value={form.tipo_animazione} onChange={e => f('tipo_animazione', e.target.value)}>
-                      {TIPI.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                    <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-              )}
+  <div>
+    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Tipi animazione</label>
+    <div className="flex flex-wrap gap-2">
+      {TIPI.map(t => (
+        <button
+          key={t}
+          type="button"
+          onClick={() => {
+            const curr = form.tipi_animazione || []
+            f('tipi_animazione', curr.includes(t) ? curr.filter(x => x !== t) : [...curr, t])
+          }}
+          className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+            (form.tipi_animazione || []).includes(t)
+              ? 'bg-mare-500 text-white'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>

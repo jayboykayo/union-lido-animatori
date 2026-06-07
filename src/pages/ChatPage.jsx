@@ -7,7 +7,7 @@ import { it } from 'date-fns/locale'
 import { Send, ChevronLeft, Users, User } from 'lucide-react'
 import TipoBadge from '../components/layout/TipoBadge'
 
-const GRUPPI = ['generale', 'Mascotte', 'Mini Club', 'Maxi Club', 'Sport Coach', 'Fitness Coach', 'Service']
+const GRUPPI = ['generale', 'Mascotte', 'Mini Club', 'Sport Coach', 'Fitness Coach', 'Service']
 
 export default function ChatPage() {
   const { profile, user } = useAuth()
@@ -53,7 +53,7 @@ export default function ChatPage() {
       <div className="mb-6">
         <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Gruppi</h2>
         <div className="space-y-2">
-          {GRUPPI.filter(g => g === 'generale' || g === profile?.tipo_animazione || profile?.ruolo !== 'animatore').map(gruppo => (
+          {GRUPPI.filter(g => g === 'generale' || g === profile?.tipi_animazione || []).includes(g) || profile?.ruolo !== 'animatore').map(gruppo => (
             <button
               key={gruppo}
               onClick={() => openGroup(gruppo)}
