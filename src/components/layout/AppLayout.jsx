@@ -38,8 +38,8 @@ export default function AppLayout() {
       <header className="bg-white border-b border-gray-100 safe-top sticky top-0 z-30">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <Waves size={22} className="text-mare-500" />
-            <span className="font-bold text-gray-800 text-base">Fun & Sound</span>
+           <img src="/logo.png" alt="Fun and Sound" className="w-7 h-7 object-contain" />
+<span className="font-bold text-gray-800 dark:text-gray-100 text-base">Fun & Sound</span>
           </div>
           <button
             onClick={() => setMenuOpen(true)}

@@ -28,7 +28,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-mare-500 via-mare-600 to-corallo-500 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-pink-500 via-fuchsia-600 to-orange-400 flex flex-col">
       {/* Header decorativo */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm">
