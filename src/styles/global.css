@@ -13,22 +13,24 @@
     overscroll-behavior: none;
   }
 
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
   * {
     -webkit-tap-highlight-color: transparent;
   }
 }
 
 @layer components {
-  /* Safe area per notch iPhone */
   .safe-top    { padding-top: env(safe-area-inset-top); }
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
 
-  /* Card base */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-100;
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100
+           dark:bg-gray-800 dark:border-gray-700;
   }
 
-  /* Bottone primario */
   .btn-primary {
     @apply bg-mare-500 text-white font-semibold py-3 px-6 rounded-xl
            active:scale-95 transition-all duration-150
@@ -36,43 +38,38 @@
            flex items-center justify-center gap-2;
   }
 
-  /* Bottone secondario */
   .btn-secondary {
     @apply bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl
            active:scale-95 transition-all duration-150
-           flex items-center justify-center gap-2;
+           flex items-center justify-center gap-2
+           dark:bg-gray-700 dark:text-gray-200;
   }
 
-  /* Bottone corallo */
   .btn-coral {
     @apply bg-corallo-500 text-white font-semibold py-3 px-6 rounded-xl
            active:scale-95 transition-all duration-150
            flex items-center justify-center gap-2;
   }
 
-  /* Input */
   .input {
     @apply w-full px-4 py-3 bg-white border border-gray-200 rounded-xl
            focus:outline-none focus:ring-2 focus:ring-mare-400 focus:border-transparent
-           text-base placeholder-gray-400 transition;
+           text-base placeholder-gray-400 transition
+           dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-500;
   }
 
-  /* Badge tipo animazione */
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
 
-  /* Bottom nav height + padding */
   .main-content {
     @apply pb-24;
   }
 
-  /* Scrollbar nascosta */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
-/* Animazione entrata pagina */
 .page-enter {
   animation: pageEnter 0.25s ease-out;
 }
@@ -81,7 +78,6 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Scrollbar sottile personalizzata (desktop) */
 @media (pointer: fine) {
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
