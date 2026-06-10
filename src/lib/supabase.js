@@ -253,7 +253,6 @@ export const getAllCompleanni = async () => {
     .order('data_nascita')
   return { data, error }
 }
-}
 // ─── Avatar ───────────────────────────────────────────────────
 export const uploadAvatar = async (userId, file) => {
   const ext = file.name.split('.').pop()
