@@ -248,9 +248,11 @@ export const getCompleannioOggi = async () => {
 export const getAllCompleanni = async () => {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, nome, cognome, data_nascita')
+    .select('id, nome, cognome, data_nascita, avatar_url')
+    .not('data_nascita', 'is', null)
     .order('data_nascita')
   return { data, error }
+}
 }
 // ─── Avatar ───────────────────────────────────────────────────
 export const uploadAvatar = async (userId, file) => {
