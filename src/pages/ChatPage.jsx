@@ -53,7 +53,7 @@ export default function ChatPage() {
       <div className="mb-6">
         <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Gruppi</h2>
         <div className="space-y-2">
-          {GRUPPI.filter(g => g === 'generale' || g === profile?.tipi_animazione || []).includes(g) || profile?.ruolo !== 'animatore').map(gruppo => (
+          {GRUPPI.filter(g => g === 'generale' || (profile?.tipi_animazione || []).includes(g) || profile?.ruolo !== 'animatore').map(gruppo => (
             <button
               key={gruppo}
               onClick={() => openGroup(gruppo)}
