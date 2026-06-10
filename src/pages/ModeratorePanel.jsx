@@ -10,7 +10,8 @@ const TIPI = ['Mascotte', 'Mini Club', 'Sport Coach', 'Fitness Coach', 'Service'
 const emptyForm = {
   nome: '', cognome: '', data_nascita: '', username: '',
   password: '', ruolo: 'animatore', tipi_animazione: [],
-  numero_stanza: '', gruppo_cucina: '', data_inizio: '', data_fine: '', telefono: ''
+  numero_stanza: '', gruppo_cucina: '', data_inizio: '', data_fine: '',
+  telefono: '', numero_bici: '', numero_braccialetto: ''
 }
 
 function Avatar({ profilo, size = 'md' }) {
@@ -70,10 +71,12 @@ export default function ModeratorePanel() {
       nome: p.nome || '', cognome: p.cognome || '',
       data_nascita: p.data_nascita || '', username: p.username || '',
       password: '', ruolo: p.ruolo || 'animatore',
-      tipo_animazione: p.tipi_animazione || [],
+      tipi_animazione: p.tipi_animazione || [],
       numero_stanza: p.numero_stanza || '', gruppo_cucina: p.gruppo_cucina || '',
       data_inizio: p.data_inizio || '', data_fine: p.data_fine || '',
-      telefono: p.telefono || ''
+      telefono: p.telefono || '',
+      numero_bici: p.numero_bici || '',
+      numero_braccialetto: p.numero_braccialetto || '',
     })
     setAvatarFile(null)
     setAvatarPreview(p.avatar_url || null)
@@ -99,11 +102,13 @@ export default function ModeratorePanel() {
     if (editing) {
       const { error } = await updateProfile(editing.id, {
         nome: form.nome, cognome: form.cognome, data_nascita: form.data_nascita || null,
-        ruolo: form.ruolo, tipo_animazione: form.ruolo === 'animatore' ? form.tipi_animazione : [],
+        ruolo: form.ruolo, tipi_animazione: form.ruolo === 'animatore' ? form.tipi_animazione : [],
         numero_stanza: form.numero_stanza || null,
         gruppo_cucina: form.gruppo_cucina ? parseInt(form.gruppo_cucina) : null,
         data_inizio: form.data_inizio || null, data_fine: form.data_fine || null,
         telefono: form.telefono || null,
+        numero_bici: form.numero_bici || null,
+        numero_braccialetto: form.numero_braccialetto || null,
       })
       if (error) { setError('Errore: ' + error.message); setSaving(false); return }
     } else {
@@ -118,6 +123,8 @@ export default function ModeratorePanel() {
         gruppo_cucina: form.gruppo_cucina ? parseInt(form.gruppo_cucina) : null,
         data_inizio: form.data_inizio || null, data_fine: form.data_fine || null,
         telefono: form.telefono || null,
+        numero_bici: form.numero_bici || null,
+        numero_braccialetto: form.numero_braccialetto || null,
       })
       if (error) { setError('Errore: ' + (error.message || 'impossibile creare utente')); setSaving(false); return }
       savedId = data?.userId
@@ -197,9 +204,11 @@ export default function ModeratorePanel() {
                   <p className="text-xs text-gray-400 mt-0.5">@{p.username}</p>
                   <div className="flex gap-1.5 mt-1.5 flex-wrap">
                     <TipoBadge tipo={p.ruolo} size="xs" />
-                    {p.tipo_animazione && <TipoBadge tipo={p.tipo_animazione} size="xs" />}
+                    {(p.tipi_animazione || []).map(t => <TipoBadge key={t} tipo={t} size="xs" />)}
                     {p.numero_stanza && <span className="badge bg-gray-100 text-gray-500 text-[10px]">Stanza {p.numero_stanza}</span>}
                     {p.gruppo_cucina && <span className="badge bg-corallo-100 text-corallo-600 text-[10px]">Cucina {p.gruppo_cucina}</span>}
+                    {p.numero_bici && <span className="badge bg-blue-100 text-blue-600 text-[10px]">🚲 {p.numero_bici}</span>}
+                    {p.numero_braccialetto && <span className="badge bg-purple-100 text-purple-600 text-[10px]">💜 {p.numero_braccialetto}</span>}
                   </div>
                 </div>
                 <div className="flex flex-col gap-1 flex-shrink-0">
@@ -233,7 +242,6 @@ export default function ModeratorePanel() {
               <button onClick={() => setShowForm(false)}><X size={22} className="text-gray-400" /></button>
             </div>
 
-            {/* Avatar preview nel form */}
             <div className="flex justify-center mb-5">
               <label className="relative cursor-pointer">
                 {avatarPreview
@@ -290,29 +298,29 @@ export default function ModeratorePanel() {
               </div>
 
               {form.ruolo === 'animatore' && (
-  <div>
-    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Tipi animazione</label>
-    <div className="flex flex-wrap gap-2">
-      {TIPI.map(t => (
-        <button
-          key={t}
-          type="button"
-          onClick={() => {
-            const curr = form.tipi_animazione || []
-            f('tipi_animazione', curr.includes(t) ? curr.filter(x => x !== t) : [...curr, t])
-          }}
-          className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
-            (form.tipi_animazione || []).includes(t)
-              ? 'bg-mare-500 text-white'
-              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
-          }`}
-        >
-          {t}
-        </button>
-      ))}
-    </div>
-  </div>
-)}
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Tipi animazione</label>
+                  <div className="flex flex-wrap gap-2">
+                    {TIPI.map(t => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => {
+                          const curr = form.tipi_animazione || []
+                          f('tipi_animazione', curr.includes(t) ? curr.filter(x => x !== t) : [...curr, t])
+                        }}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                          (form.tipi_animazione || []).includes(t)
+                            ? 'bg-mare-500 text-white'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -339,6 +347,17 @@ export default function ModeratorePanel() {
               <div>
                 <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Telefono</label>
                 <input type="tel" className="input" value={form.telefono} onChange={e => f('telefono', e.target.value)} placeholder="+39 333 1234567" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">N. Bici</label>
+                  <input className="input" value={form.numero_bici || ''} onChange={e => f('numero_bici', e.target.value)} placeholder="es. 42" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">N. Braccialetto</label>
+                  <input className="input" value={form.numero_braccialetto || ''} onChange={e => f('numero_braccialetto', e.target.value)} placeholder="es. 1234" />
+                </div>
               </div>
 
               {error && (
