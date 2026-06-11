@@ -13,6 +13,12 @@ export const translations = {
     pannelloModeratore: 'Pannello moderatore',
     esci: 'Esci',
     lingua: 'Lingua',
+    // italiano
+mappa: 'Mappa',
+// inglese  
+mappa: 'Map',
+// tedesco
+mappa: 'Karte',
     // HomePage
     buongiorno: 'Buongiorno',
     buonPomeriggio: 'Buon pomeriggio',

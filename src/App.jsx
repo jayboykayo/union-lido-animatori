@@ -1,3 +1,4 @@
+import MappaPage from './pages/MappaPage'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import LoginPage from './pages/LoginPage'
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="rubrica" element={<RubricaPage />} />
         <Route path="annunci" element={<AnnunciPage />} />
         <Route path="compleanni" element={<CompleanniPage />} />
+        <Route path="mappa" element={<MappaPage />} />
         <Route path="profilo" element={<ProfiloPage />} />
         <Route
           path="moderatore"

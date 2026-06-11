@@ -6,7 +6,7 @@ import { useLanguage } from '../../hooks/useLanguage'
 import { signOut } from '../../lib/supabase'
 import {
   Home, CalendarDays, MessageCircle, ChefHat, BookUser,
-  Menu, X, Megaphone, Cake, User, ShieldCheck, LogOut, Sun, Moon
+  Menu, X, Megaphone, Cake, User, ShieldCheck, LogOut, Sun, Moon, Map
 } from 'lucide-react'
 
 const LINGUE = [
@@ -39,6 +39,7 @@ export default function AppLayout() {
     { to: '/profilo', icon: User, label: t('ilMioProfilo') },
     { to: '/annunci', icon: Megaphone, label: t('annunci') },
     { to: '/compleanni', icon: Cake, label: t('compleanni') },
+    { to: '/mappa', icon: Map, label: t('mappa') },
     ...(isModerator ? [{ to: '/moderatore', icon: ShieldCheck, label: t('pannelloModeratore') }] : []),
   ]
 
