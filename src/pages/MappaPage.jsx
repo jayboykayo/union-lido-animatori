@@ -2,32 +2,26 @@ import { useState } from 'react'
 import { Maximize2, Minimize2, X } from 'lucide-react'
 
 const ZONE = [
-  { id: 'reception', label: 'Reception / Welcome', x: 28, y: 72, query: 'Reception Union Lido Mare Cavallino' },
-  { id: 'aquapark_laguna', label: 'Aqua Park Laguna', x: 78, y: 75, query: 'Aqua Park Laguna Union Lido Mare' },
-  { id: 'aquapark_marino', label: 'Aqua Park Marino', x: 42, y: 35, query: 'Aqua Park Marino Union Lido Mare' },
-  { id: 'funny_world', label: 'Funny World', x: 27, y: 65, query: 'Funny World Union Lido Mare' },
-  { id: 'shopping', label: 'Shopping Center', x: 25, y: 58, query: 'Shopping Center Union Lido Mare' },
-  { id: 'activity_park', label: 'Activity Park', x: 88, y: 30, query: 'Activity Park Union Lido Mare Cavallino' },
-  { id: 'camping_market', label: 'Camping Market', x: 30, y: 90, query: 'Camping Market Union Lido Mare' },
-  { id: 'artpark_hotel', label: 'Art & Park Hotel', x: 22, y: 80, query: 'Art Park Hotel Union Lido Mare' },
-  { id: 'dog_beach', label: 'Dog Beach', x: 82, y: 8, query: 'Dog Beach Union Lido Mare Cavallino' },
-  { id: 'blu_beach', label: 'Blu Beach', x: 65, y: 8, query: 'Blu Beach Union Lido Mare' },
-  { id: 'marino_spa', label: 'Marino Wellness & Spa', x: 43, y: 32, query: 'Marino Wellness Spa Union Lido Mare' },
+  { id: 'vovi_vegs', label: 'Vovi Vegs', x: 45, y: 55, url: 'https://maps.app.goo.gl/fBHHVmFmuQiUmQCj6' },
+  { id: 'aquapark_marino', label: 'Aqua Park Marino', x: 42, y: 35, url: 'https://maps.app.goo.gl/HBtSuAo3XtVYc8fK8' },
+  { id: 'beach_volley', label: 'Campi Beach Volley', x: 60, y: 15, url: 'https://maps.app.goo.gl/xsEEQ4jbc8jV5uHx8' },
+  { id: 'lido55', label: 'Lido 55', x: 18, y: 65, url: 'https://maps.app.goo.gl/dmSprWoSuEr7RUEg7' },
+  { id: 'luxury_beach', label: 'Luxury Beach', x: 72, y: 10, url: 'https://maps.app.goo.gl/CgUYrd6sDyasuinq8' },
+  { id: 'aquapark_laguna', label: 'Aqua Park Laguna', x: 78, y: 75, url: 'https://maps.app.goo.gl/CgUYrd6sDyasuinq8' },
+  { id: 'beach_bar', label: 'Beach Bar', x: 55, y: 12, url: 'https://maps.app.goo.gl/goidyoxDcc8HFQQJA' },
+  { id: 'info_point', label: 'Info Point', x: 82, y: 45, url: 'https://maps.app.goo.gl/goidyoxDcc8HFQQJA' },
+  { id: 'il_borgo', label: 'Il Borgo', x: 35, y: 48, url: 'https://maps.app.goo.gl/eSRSoFuj8RryCEnr5' },
+  { id: 'da_italo', label: 'Da Italo', x: 50, y: 70, url: 'https://maps.app.goo.gl/iEhicZBGip7FEUGs9' },
+  { id: 'casa_venezia', label: 'Casa Venezia', x: 65, y: 55, url: 'https://maps.app.goo.gl/KMXjPYWr1BsqgViT9' },
 ]
 
 export default function MappaPage() {
   const [fullscreen, setFullscreen] = useState(false)
   const [tooltip, setTooltip] = useState(null)
 
-  const openMaps = (query) => {
-    const encoded = encodeURIComponent(query)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    const url = isIOS
-      ? `maps://?q=${encoded}`
-      : `https://www.google.com/maps/search/?api=1&query=${encoded}`
-    window.open(url, '_blank')
-  }
-
+  const openMaps = (url) => {
+  window.open(url, '_blank')
+}
   return (
     <div className={`flex flex-col ${fullscreen ? 'fixed inset-0 z-50 bg-white dark:bg-gray-900 p-4' : 'max-w-lg mx-auto px-4 py-5'}`}>
       <div className="flex items-center justify-between mb-3">
@@ -85,7 +79,7 @@ export default function MappaPage() {
               </button>
             </div>
             <button
-              onClick={() => { openMaps(tooltip.query); setTooltip(null) }}
+              onClick={() => { openMaps(tooltip.url); setTooltip(null) }}
               className="btn-primary w-full"
             >
               📍 Apri in Maps
