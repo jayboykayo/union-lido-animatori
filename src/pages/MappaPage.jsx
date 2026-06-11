@@ -38,7 +38,7 @@ export default function MappaPage() {
           }}
         >
           <img
-            src="/mappa.png"
+            src="/mappa2.pdf"
             alt="Mappa Union Lido"
             className="w-full h-auto select-none"
             draggable={false}
