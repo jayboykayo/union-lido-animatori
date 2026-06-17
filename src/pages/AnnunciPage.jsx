@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { getAnnunci, creaAnnuncio, eliminaAnnuncio } from '../lib/supabase'
+import { getAnnunci, creaAnnuncio, eliminaAnnuncio, sendNotification } from '../lib/supabase'
 import { format } from 'date-fns'
 import { it } from 'date-fns/locale'
 import { Megaphone, Plus, Trash2, X } from 'lucide-react'
@@ -27,6 +27,7 @@ export default function AnnunciPage() {
     if (!form.titolo.trim() || !form.testo.trim()) return
     setSaving(true)
     await creaAnnuncio({ ...form, autore_id: user.id })
+    await sendNotification(`📢 ${form.titolo}`, form.testo)
     setForm({ titolo: '', testo: '' })
     setShowForm(false)
     setSaving(false)
@@ -90,7 +91,6 @@ export default function AnnunciPage() {
         </div>
       )}
 
-      {/* Modal nuovo annuncio */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
           <div className="bg-white w-full rounded-t-3xl p-6 animate-slide-up">

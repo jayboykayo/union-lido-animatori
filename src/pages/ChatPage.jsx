@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { getMessaggiGruppo, getMessaggiPrivati, inviaMessaggio, getAllProfiles, segnaLetti } from '../lib/supabase'
+import { getMessaggiGruppo, getMessaggiPrivati, inviaMessaggio, getAllProfiles, segnaLetti, sendNotification } from '../lib/supabase'
 import { useRealtime } from '../hooks/useRealtime'
 import { format } from 'date-fns'
 import { it } from 'date-fns/locale'
@@ -156,6 +156,13 @@ function ChatWindow({ chat, userId, profile, onBack }) {
       ),
     }
     await inviaMessaggio(msg)
+    // Notifica solo per messaggi privati
+if (chat.type === 'private') {
+  await sendNotification(
+    `Nuovo messaggio da ${profile?.nome}`,
+    text
+  )
+}
     setTesto('')
     setSending(false)
   }

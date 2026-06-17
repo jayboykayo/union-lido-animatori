@@ -275,3 +275,10 @@ export const getAvatarUrl = (userId, ext = 'png') => {
     .getPublicUrl(`${userId}.${ext}`)
   return data.publicUrl
 }
+// ─── Notifiche ────────────────────────────────────────────────
+export const sendNotification = async (title, message) => {
+  const { data, error } = await supabase.functions.invoke('send-notification', {
+    body: { title, message },
+  })
+  return { data, error }
+}
