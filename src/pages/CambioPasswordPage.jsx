@@ -25,10 +25,11 @@ export default function CambioPasswordPage() {
     const { error: pwError } = await changePassword(pw1)
     if (pwError) { setError('Errore nel cambio password: ' + pwError.message); setLoading(false); return }
 
-    // Segna primo accesso come completato
     await updateProfile(user.id, { primo_accesso: false })
-    await refreshProfile()
-    navigate('/')
+await refreshProfile()
+// Piccola pausa per assicurarsi che il profilo sia aggiornato
+await new Promise(resolve => setTimeout(resolve, 500))
+navigate('/')
   }
 
   const strength = pw1.length === 0 ? 0 : pw1.length < 6 ? 1 : pw1.length < 10 ? 2 : 3
