@@ -47,7 +47,7 @@ export default function ChatPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-5">
-      <h1 className="text-xl font-extrabold text-gray-900 mb-5">Chat</h1>
+      <h1 className="text-xl font-extrabold text-gray-900 dark:text-white mb-5">Chat</h1>
 
       {/* Gruppi */}
       <div className="mb-6">
@@ -63,8 +63,8 @@ export default function ChatPage() {
                 <Users size={20} className="text-mare-600" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-gray-800">{gruppo === 'generale' ? 'Tutti gli animatori' : gruppo}</p>
-                <p className="text-gray-400 text-xs mt-0.5">{gruppo === 'generale' ? 'Gruppo generale' : 'Gruppo tipo'}</p>
+                <p className="font-semibold text-gray-800 dark:text-white">{gruppo === 'generale' ? 'Tutti gli animatori' : gruppo}</p>
+<p className="text-gray-400 dark:text-gray-400 text-xs mt-0.5">{gruppo === 'generale' ? 'Gruppo generale' : 'Gruppo tipo'}</p>
               </div>
               <ChevronLeft size={18} className="text-gray-300 rotate-180" />
             </button>
@@ -86,7 +86,7 @@ export default function ChatPage() {
                 <span className="text-white font-bold text-sm">{a.nome?.[0]}{a.cognome?.[0]}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-800">{a.nome} {a.cognome}</p>
+                <p className="font-semibold text-gray-800 dark:text-white">{a.nome} {a.cognome}</p>
                 {a.tipo_animazione && <TipoBadge tipo={a.tipo_animazione} size="xs" />}
               </div>
               <ChevronLeft size={18} className="text-gray-300 rotate-180" />
@@ -176,7 +176,7 @@ if (chat.type === 'private') {
   return (
     <div className="flex flex-col h-[calc(100vh-116px)]">
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 px-4 py-3 flex items-center gap-3">
         <button onClick={onBack} className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-xl transition">
           <ChevronLeft size={22} />
         </button>
@@ -184,13 +184,13 @@ if (chat.type === 'private') {
           {chat.type === 'group' ? <Users size={16} className="text-white" /> : <User size={16} className="text-white" />}
         </div>
         <div>
-          <p className="font-bold text-gray-900 text-sm">{chat.label}</p>
+          <p className="font-bold text-gray-900 dark:text-white text-sm">{chat.label}</p>
           {chat.tipo && <TipoBadge tipo={chat.tipo} size="xs" />}
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50 dark:bg-gray-900">
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-2 border-mare-200 border-t-mare-500 rounded-full animate-spin" />
@@ -223,7 +223,7 @@ if (chat.type === 'private') {
                         <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                           isMine
                             ? 'bg-mare-500 text-white rounded-br-sm'
-                            : 'bg-white text-gray-800 shadow-sm rounded-bl-sm border border-gray-100'
+                            : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm rounded-bl-sm border border-gray-100 dark:border-gray-600'
                         }`}>
                           {m.testo}
                         </div>
@@ -242,7 +242,7 @@ if (chat.type === 'private') {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-100 px-4 py-3 flex items-end gap-2">
+      <div className="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 px-4 py-3 flex items-end gap-2">
         <textarea
           className="flex-1 bg-gray-100 rounded-2xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-mare-400 max-h-28 min-h-[44px]"
           placeholder="Scrivi un messaggio..."
