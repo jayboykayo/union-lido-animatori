@@ -49,13 +49,13 @@ export default function ProgrammaPage() {
   return (
     <div className="max-w-lg mx-auto">
       {/* Header navigazione data */}
-      <div className="bg-white border-b border-gray-100 px-4 py-4 sticky top-14 z-20">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 px-4 py-4 sticky top-14 z-20">
         <div className="flex items-center justify-between">
           <button onClick={() => setData(d => subDays(d, 1))} className="p-2 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition">
             <ChevronLeft size={22} className="text-gray-600" />
           </button>
           <div className="text-center">
-            <p className="font-bold text-gray-900 capitalize text-sm">{dataLabel}</p>
+            <p className="font-bold text-gray-900 dark:text-white capitalize text-sm">{dataLabel}</p>
             <button
               onClick={() => setData(startOfToday())}
               className="text-xs text-mare-500 font-medium mt-0.5"
