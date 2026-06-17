@@ -8,7 +8,7 @@ const ZONE = [
   { id: 'lido55', label: 'Lido 55', x: 18, y: 65, url: 'https://maps.app.goo.gl/dmSprWoSuEr7RUEg7' },
   { id: 'luxury_beach', label: 'Luxury Beach', x: 63, y: 28, url: 'https://maps.app.goo.gl/CgUYrd6sDyasuinq8' },
   { id: 'aquapark_laguna', label: 'Aqua Park Laguna', x: 78, y: 75, url: 'https://maps.app.goo.gl/CgUYrd6sDyasuinq8' },
-  { id: 'beach_bar', label: 'Beach Bar', x: 12, y: 55, url: 'https://maps.app.goo.gl/goidyoxDcc8HFQQJA' },
+  { id: 'beach_bar', label: 'Beach Bar', x: 8, y: 42, url: 'https://maps.app.goo.gl/goidyoxDcc8HFQQJA' },
   { id: 'info_point', label: 'Info Point', x: 82, y: 45, url: 'https://maps.app.goo.gl/goidyoxDcc8HFQQJA' },
   { id: 'il_borgo', label: 'Il Borgo', x: 35, y: 48, url: 'https://maps.app.goo.gl/eSRSoFuj8RryCEnr5' },
   { id: 'da_italo', label: 'Da Italo', x: 50, y: 70, url: 'https://maps.app.goo.gl/iEhicZBGip7FEUGs9' },
