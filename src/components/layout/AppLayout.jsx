@@ -38,7 +38,6 @@ export default function AppLayout() {
     { to: '/profilo', icon: User, label: t('ilMioProfilo') },
     { to: '/annunci', icon: Megaphone, label: t('annunci') },
     { to: '/compleanni', icon: Cake, label: t('compleanni') },
-    { to: '/mappa', icon: Map, label: t('mappa') },
     ...(isModerator ? [{ to: '/moderatore', icon: ShieldCheck, label: t('pannelloModeratore') }] : []),
   ]
 
