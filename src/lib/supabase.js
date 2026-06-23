@@ -311,3 +311,32 @@ export const eliminaPrenotazioneLavatrice = async (id) => {
     .eq('id', id)
   return { error }
 }
+// ─── Chat: foto e pin ──────────────────────────────────────────
+export const uploadChatFoto = async (file) => {
+  const ext = file.name.split('.').pop()
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+  const { error } = await supabase.storage
+    .from('chat-foto')
+    .upload(path, file)
+  if (error) return { error }
+  const { data } = supabase.storage.from('chat-foto').getPublicUrl(path)
+  return { url: data.publicUrl, error: null }
+}
+
+export const toggleFissaMessaggio = async (id, fissato) => {
+  const { error } = await supabase
+    .from('messaggi')
+    .update({ fissato })
+    .eq('id', id)
+  return { error }
+}
+
+export const getMessaggiFissati = async (gruppo) => {
+  const { data, error } = await supabase
+    .from('messaggi')
+    .select(`*, profiles:mittente_id(nome, cognome)`)
+    .eq('gruppo', gruppo)
+    .eq('fissato', true)
+    .order('created_at', { ascending: false })
+  return { data, error }
+}
