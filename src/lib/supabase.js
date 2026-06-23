@@ -282,3 +282,32 @@ export const sendNotification = async (title, message) => {
   })
   return { data, error }
 }
+// ─── Lavatrice ────────────────────────────────────────────────
+export const getPrenotazioniLavatrice = async (data) => {
+  const inizio = `${data}T00:00:00`
+  const fine = `${data}T23:59:59`
+  const { data: rows, error } = await supabase
+    .from('prenotazioni_lavatrice')
+    .select(`*, profiles(nome, cognome)`)
+    .gte('inizio', inizio)
+    .lte('inizio', fine)
+    .order('inizio')
+  return { data: rows, error }
+}
+
+export const creaPrenotazioneLavatrice = async (prenotazione) => {
+  const { data, error } = await supabase
+    .from('prenotazioni_lavatrice')
+    .insert(prenotazione)
+    .select()
+    .single()
+  return { data, error }
+}
+
+export const eliminaPrenotazioneLavatrice = async (id) => {
+  const { error } = await supabase
+    .from('prenotazioni_lavatrice')
+    .delete()
+    .eq('id', id)
+  return { error }
+}

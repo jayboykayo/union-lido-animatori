@@ -5,7 +5,7 @@ import { useTheme } from '../../hooks/useTheme'
 import { useLanguage } from '../../hooks/useLanguage'
 import { signOut } from '../../lib/supabase'
 import { Home, CalendarDays, MessageCircle, ChefHat, BookUser,
-  Menu, X, Megaphone, Cake, User, ShieldCheck, LogOut, Waves, Sun, Moon, Languages
+  Menu, X, Megaphone, Cake, User, ShieldCheck, LogOut, Waves, Sun, Moon, Languages, WashingMachine
 } from 'lucide-react'
 
 const LINGUE = [
@@ -35,11 +35,12 @@ export default function AppLayout() {
   ]
 
   const menuLinks = [
-    { to: '/profilo', icon: User, label: t('ilMioProfilo') },
-    { to: '/annunci', icon: Megaphone, label: t('annunci') },
-    { to: '/compleanni', icon: Cake, label: t('compleanni') },
-    ...(isModerator ? [{ to: '/moderatore', icon: ShieldCheck, label: t('pannelloModeratore') }] : []),
-  ]
+  { to: '/profilo', icon: User, label: t('ilMioProfilo') },
+  { to: '/annunci', icon: Megaphone, label: t('annunci') },
+  { to: '/compleanni', icon: Cake, label: t('compleanni') },
+  { to: '/lavatrice', icon: WashingMachine, label: 'Lavatrice' },
+  ...(isModerator ? [{ to: '/moderatore', icon: ShieldCheck, label: t('pannelloModeratore') }] : []),
+]
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">

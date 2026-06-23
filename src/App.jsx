@@ -1,4 +1,3 @@
-import MappaPage from './pages/MappaPage'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import LoginPage from './pages/LoginPage'
@@ -13,6 +12,7 @@ import AnnunciPage from './pages/AnnunciPage'
 import CompleanniPage from './pages/CompleanniPage'
 import ProfiloPage from './pages/ProfiloPage'
 import ModeratorePanel from './pages/ModeratorePanel'
+import LavatricePage from './pages/LavatricePage'
 import LoadingSpinner from './components/layout/LoadingSpinner'
 
 function PrivateRoute({ children }) {
@@ -32,29 +32,13 @@ function ModeratorRoute({ children }) {
 
 export default function App() {
   const { isAuthenticated, loading, primoAccesso } = useAuth()
-
   if (loading) return <LoadingSpinner />
 
   return (
     <Routes>
-      <Route
-        path="/login"
-        element={isAuthenticated && !primoAccesso ? <Navigate to="/" replace /> : <LoginPage />}
-      />
-      <Route
-        path="/cambia-password"
-        element={!isAuthenticated ? <Navigate to="/login" replace /> : <CambioPasswordPage />}
-      />
-
-      {/* Route protette con layout */}
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <AppLayout />
-          </PrivateRoute>
-        }
-      >
+      <Route path="/login" element={isAuthenticated && !primoAccesso ? <Navigate to="/" replace /> : <LoginPage />} />
+      <Route path="/cambia-password" element={!isAuthenticated ? <Navigate to="/login" replace /> : <CambioPasswordPage />} />
+      <Route path="/" element={<PrivateRoute><AppLayout /></PrivateRoute>}>
         <Route index element={<HomePage />} />
         <Route path="programma" element={<ProgrammaPage />} />
         <Route path="chat" element={<ChatPage />} />
@@ -62,18 +46,10 @@ export default function App() {
         <Route path="rubrica" element={<RubricaPage />} />
         <Route path="annunci" element={<AnnunciPage />} />
         <Route path="compleanni" element={<CompleanniPage />} />
-        <Route path="mappa" element={<MappaPage />} />
+        <Route path="lavatrice" element={<LavatricePage />} />
         <Route path="profilo" element={<ProfiloPage />} />
-        <Route
-          path="moderatore"
-          element={
-            <ModeratorRoute>
-              <ModeratorePanel />
-            </ModeratorRoute>
-          }
-        />
+        <Route path="moderatore" element={<ModeratorRoute><ModeratorePanel /></ModeratorRoute>} />
       </Route>
-
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
