@@ -38,9 +38,9 @@ export function AuthProvider({ children }) {
     setLoading(false)
   }
 
-  const refreshProfile = () => {
-    if (session?.user) loadProfile(session.user.id)
-  }
+  const refreshProfile = async () => {
+  if (session?.user) await loadProfile(session.user.id)
+}
 
   const value = {
     session,
