@@ -51,17 +51,6 @@ export default function AppLayout() {
             <img src="/logo.png" alt="Fun and Sound" className="w-11 h-11 object-contain" />
             <span className="font-bold text-gray-800 dark:text-gray-100 text-base">Fun & Sound</span>
           </div>
-          <button
-  onClick={() => {
-    const el = document.querySelector('.goog-te-combo')
-    if (el) el.focus()
-    document.getElementById('google_translate_element').style.display = 
-      document.getElementById('google_translate_element').style.display === 'none' ? 'block' : 'none'
-  }}
-  className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition"
->
-  <Languages size={20} className="text-gray-500 dark:text-gray-400" />
-</button>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setDark(!dark)}
